@@ -1,0 +1,6 @@
+**
+!Dockerfile
+!src/
+!src/analysis.hpp
+!src/analysis.cpp
+!src/main.cpp
