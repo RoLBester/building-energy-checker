@@ -2,6 +2,8 @@
 
 A C++23 command-line tool and React dashboard for reviewing daily appliance energy. Both use the same C++ parser and aggregation code. The dashboard runs it in a WebAssembly worker on your device.
 
+[Open the live energy dashboard](https://rolbester.github.io/building-energy-checker/)
+
 ## Build and run
 
 From the project root, build with a C++23 compiler. The native build was tested with Apple Clang 21.
