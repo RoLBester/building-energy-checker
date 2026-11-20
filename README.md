@@ -1,12 +1,12 @@
 # Building Energy Checker
 
-A C++23 command-line tool and React dashboard for reviewing daily appliance energy. Both use the same C++ parser and aggregation code. The dashboard runs it in a WebAssembly worker on your device.
+Explore appliance energy by day, flag high readings, and see how much data went into each total. Open a CSV on your device or run the same analysis in a terminal.
 
 [Open the live energy dashboard](https://rolbester.github.io/building-energy-checker/)
 
 ## Build and run
 
-From the project root, build with a C++23 compiler. The native build was tested with Apple Clang 21.
+Run these commands from the project root. The native build was tested with Apple Clang 21.
 
 ```sh
 mkdir -p build
@@ -50,7 +50,7 @@ git clone --depth 1 --branch 4.0.23 https://github.com/emscripten-core/emsdk.git
 .local/tools/emsdk/emsdk activate 4.0.23
 ```
 
-With Node on your path, build the C++ engine and the locked TypeScript frontend. Open the local address printed by Vite.
+With Node on your path, build the dashboard and open the local address printed by Vite.
 
 ```sh
 source .local/tools/emsdk/emsdk_env.sh
