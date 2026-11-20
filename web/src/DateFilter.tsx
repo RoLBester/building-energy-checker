@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DateRange } from './model'
+import Icon from './Icon'
 
 interface Props {
   bounds: DateRange
@@ -10,12 +11,21 @@ interface Props {
 export default function DateFilter({ bounds, range, onChange }: Props) {
   const [open, setOpen] = useState(false)
   const [draft, setDraft] = useState(range)
+  const root = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!open) return
+    const outside = (e: PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('pointerdown', outside)
+    return () => document.removeEventListener('pointerdown', outside)
+  }, [open])
   function apply(next: DateRange) {
     onChange(next)
     setOpen(false)
     document.getElementById('date-filter-button')?.focus()
   }
-  return <div className="range-control" onKeyDown={event => {
+  return <div ref={root} className="range-control" onKeyDown={event => {
     if (event.key === 'Escape') {
       setOpen(false)
       document.getElementById('date-filter-button')?.focus()
@@ -24,7 +34,7 @@ export default function DateFilter({ bounds, range, onChange }: Props) {
     <button id="date-filter-button" type="button" className="secondary-button filter-toggle"
       aria-expanded={open} aria-controls="date-filter"
       onClick={() => { setDraft(range); setOpen(!open) }}>
-      <span className="calendar-icon" aria-hidden="true" />Date range<span className="chevron" aria-hidden="true" />
+      <Icon name="calendar" />Date range
     </button>
     {open && <form id="date-filter" className="date-filter" onSubmit={event => { event.preventDefault(); apply(draft) }}>
       <div className="dates">

@@ -21,6 +21,14 @@ emscripten::val analyze_csv(const std::string& csv, const std::string& threshold
         row.set("observedKwh", day.observed_kwh());
         row.set("formattedKwh", day.formatted_kwh());
         row.set("highReadings", day.high_readings);
+        auto hours = emscripten::val::array();
+        for (const auto& hour : day.hours) {
+            auto bin = emscripten::val::object();
+            bin.set("wh", hour.watt_hours);
+            bin.set("readings", hour.readings);
+            hours.call<void>("push", bin);
+        }
+        row.set("hours", hours);
         days.call<void>("push", row);
     }
     result.set("days", days);

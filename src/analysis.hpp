@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cstddef>
 #include <istream>
 #include <map>
@@ -8,10 +9,16 @@
 
 namespace energy {
 
+struct Hour {
+    double watt_hours = 0;
+    std::size_t readings = 0;
+};
+
 struct Day {
     std::size_t valid_readings = 0;
     double watt_hours = 0;
     std::size_t high_readings = 0;
+    std::array<Hour, 24> hours{};
 
     double observed_kwh() const { return watt_hours / 1000.0; }
     std::string formatted_kwh() const;

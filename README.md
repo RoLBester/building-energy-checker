@@ -57,11 +57,14 @@ source .local/tools/emsdk/emsdk_env.sh
 sh scripts/build-wasm.sh
 cd web
 npm ci
+npm test
 npm run build
 npm run preview -- --host 127.0.0.1 --port 4173 --strictPort
 ```
 
-Choose a CSV or use the demo, set a threshold and select **Run analysis**. **Date range** filters the summary, chart and table. Select a bar to inspect a day. File quality counts cover the whole file.
+The hourly profile shows up to seven days at a time. Each ridge follows one day's observed Wh. Point at a reading, tap it, or use the day selector and hour slider. An hour with no accepted readings is shown as **Unobserved**. Select a date in the daily register to bring its peak hour into view.
+
+Open **Analysis settings** to choose a CSV or the demo, set the high-reading threshold and run the analysis. **Date range** filters the summary, profile and register. The coverage counts always describe the whole file.
 
 ## Dataset
 

@@ -59,14 +59,15 @@ std::optional<double> watt_hours(std::string_view text) {
     return value;
 }
 
-bool valid_timestamp(std::string_view text) {
+// Check the full timestamp before using its clock hour as a bucket.
+std::optional<unsigned> validated_hour(std::string_view text) {
     constexpr std::string_view pattern = "0000-00-00 00:00:00";
-    if (text.size() != pattern.size()) return false;
+    if (text.size() != pattern.size()) return std::nullopt;
     for (std::size_t i = 0; i < text.size(); ++i) {
         if (pattern[i] == '0') {
-            if (text[i] < '0' || text[i] > '9') return false;
+            if (text[i] < '0' || text[i] > '9') return std::nullopt;
         } else if (text[i] != pattern[i]) {
-            return false;
+            return std::nullopt;
         }
     }
     auto number = [&](std::size_t pos, std::size_t count) {
@@ -76,8 +77,10 @@ bool valid_timestamp(std::string_view text) {
     };
     const auto year = std::chrono::year{number(0, 4)};
     const auto date = year / number(5, 2) / number(8, 2);
-    return int(year) > 0 && date.ok() &&
-           number(11, 2) < 24 && number(14, 2) < 60 && number(17, 2) < 60;
+    const auto hour = number(11, 2);
+    if (int(year) == 0 || !date.ok() || hour >= 24 ||
+        number(14, 2) >= 60 || number(17, 2) >= 60) return std::nullopt;
+    return static_cast<unsigned>(hour);
 }
 
 }  // namespace
@@ -121,7 +124,8 @@ Report analyze(std::istream& input, std::string_view high_wh) {
         }
         const auto& timestamp = (*fields)[date_col];
         const auto wh = watt_hours((*fields)[wh_col]);
-        if (!wh || !valid_timestamp(timestamp)) {
+        const auto hour = validated_hour(timestamp);
+        if (!wh || !hour) {
             ++report.rejected;
             continue;
         }
@@ -137,6 +141,8 @@ Report analyze(std::istream& input, std::string_view high_wh) {
             return report;
         }
         ++day.valid_readings;
+        day.hours[*hour].watt_hours += *wh;
+        ++day.hours[*hour].readings;
         if (*wh >= *threshold) ++day.high_readings;
         ++report.accepted;
     }

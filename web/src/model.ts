@@ -1,9 +1,15 @@
+export interface Hour {
+  wh: number
+  readings: number
+}
+
 export interface Day {
   date: string
   validReadings: number
   observedKwh: number
   formattedKwh: string
   highReadings: number
+  hours: Hour[]
 }
 
 export interface Report {
@@ -35,3 +41,5 @@ export function displayRange({ start, end }: DateRange) {
 }
 
 export const count = (value: number) => value.toLocaleString('en-GB')
+const whFormat = new Intl.NumberFormat('en-GB', { maximumSignificantDigits: 12 })
+export const wattHours = (value: number) => whFormat.format(value)
